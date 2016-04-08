@@ -1,5 +1,7 @@
 {
     "require": {
-        "react/http": "0.3.*"
+        "react/http": "0.3.*",
+        "react/event-loop":"*",
+        "phplucidframe/phplucidframe":"*"
     }
 }

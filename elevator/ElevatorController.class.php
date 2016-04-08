@@ -9,6 +9,8 @@
     namespace elevator;
 
 
+    use LucidFrame\Console\ConsoleTable;
+
     class ElevatorController
     {
         /**
@@ -66,5 +68,44 @@
                 }
             }
 
+        }
+
+        public function elevatorRun(){
+            foreach($this->elevatorList as $elevator){
+                $elevator->move();
+            }
+            $this->drawCurrentState();
+        }
+
+        private function drawCurrentState(){
+            system('clear');
+            $table = new ConsoleTable();
+            $table->addHeader("Floor");
+            foreach($this->elevatorList as $index =>$elevator){
+                $table->addHeader("E{$index}");
+            }
+            for($floor = $this->maxFloorCount; $floor >= 1; $floor--){
+                $row = [];
+                $row[] = $floor;
+                foreach($this->elevatorList as $elevator){
+                    if($elevator->getCurrentFloor() == $floor){
+                        switch($elevator->getCurrentState()){
+                            case Elevator::DIRECTION_UP:
+                                    $row[] = "<";
+                                break;
+                            case Elevator::DIRECTION_DOWN;
+                                    $row[] = ">";
+                                break;
+                            default:
+                                    $row[] = "*";
+                                break;
+                        }
+                    }else{
+                        $row[] = " ";
+                    }
+                }
+                $table->addRow($row);
+            }
+            $table->display();
         }
     }

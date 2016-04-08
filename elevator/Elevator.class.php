@@ -55,21 +55,23 @@
         }
 
         public function move(){
-            if($this->destinationFloor != $this->currentFloor){
-                if($this->destinationFloor < $this->currentFloor){
-                    $this->currentState = self::DIRECTION_DOWN;
-                    $this->currentFloor--;
-                }else{
-                    $this->currentState = self::DIRECTION_UP;
-                    $this->currentFloor++;
-                }
-            }else{
-                if(in_array($this->currentState, [self::DIRECTION_DOWN, self::DIRECTION_UP] )){
-                    $this->currentState = self::DIRECTION_STAND;
-                    $this->raiseEvent(self::EVENT_DOOR_OPEN);
-                }else{
-                    if(self::EVENT_DOOR_OPEN == $this->lastEvent){
-                        $this->raiseEvent(self::EVENT_DOOR_CLOSE);
+            if($this->destinationFloor) {
+                if ($this->destinationFloor != $this->currentFloor) {
+                    if ($this->destinationFloor < $this->currentFloor) {
+                        $this->currentState = self::DIRECTION_DOWN;
+                        $this->currentFloor--;
+                    } else {
+                        $this->currentState = self::DIRECTION_UP;
+                        $this->currentFloor++;
+                    }
+                } else {
+                    if (in_array($this->currentState, [self::DIRECTION_DOWN, self::DIRECTION_UP])) {
+                        $this->currentState = self::DIRECTION_STAND;
+                        $this->raiseEvent(self::EVENT_DOOR_OPEN);
+                    } else {
+                        if (self::EVENT_DOOR_OPEN == $this->lastEvent) {
+                            $this->raiseEvent(self::EVENT_DOOR_CLOSE);
+                        }
                     }
                 }
             }
@@ -80,21 +82,25 @@
             $this->lastEvent = $eventName;
             switch ($eventName) {
                 case self::EVENT_ALARM:
-                    echo "Elevator {$this->id} send alarm event";
+                    echo "Elevator {$this->id} send alarm event".PHP_EOL;
                     break;
                 case self::EVENT_DOOR_OPEN:
-                    echo "Elevator {$this->id} send door open event";
+                    echo "Elevator {$this->id} send door open event".PHP_EOL;
                     break;
                 case self::EVENT_DOOR_CLOSE:
-                    echo "Elevator {$this->id} send door close event";
+                    echo "Elevator {$this->id} send door close event".PHP_EOL;
                     break;
                 default:
-                    echo "Elevator {$this->id} send unknown event";
+                    echo "Elevator {$this->id} send unknown event".PHP_EOL;
                     break;
             }
         }
 
         public function getCurrentFloor(){
             return $this->currentFloor;
+        }
+
+        public function getCurrentState(){
+            return $this->currentState;
         }
     }
