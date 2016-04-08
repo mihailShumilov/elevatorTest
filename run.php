@@ -14,15 +14,19 @@
     require_once ("vendor/phplucidframe/phplucidframe/lib/classes/console/ConsoleTable.php");
 
 
+    $elevatorController = new \elevator\ElevatorController();
 
-    $app = function ($request, $response) {
+    $app = function ($request, $response) use (&$elevatorController) {
         $response->writeHead(200, array('Content-Type' => 'text/plain'));
-        $response->end("Hello World\n");
+        $from = intval(rand(1, 10));
+        $to = intval(rand(1, 10));
+        $elevatorController->elevatorRequest($from,$to);
+        $response->end("Request from {$from} to {$to}\n");
     };
 
     $loop = React\EventLoop\Factory::create();
 
-    $elevatorController = new \elevator\ElevatorController();
+
 
     $loop->addPeriodicTimer(1, function () use (&$elevatorController) {
         echo $elevatorController->elevatorRun();

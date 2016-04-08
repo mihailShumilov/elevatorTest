@@ -62,12 +62,21 @@
             $elevatorDistance = [];
             foreach($this->elevatorList as $index=>$elevator){
                 if($elevator->getCurrentFloor() == $floorNum){
-                    return $elevator;
+                    if(Elevator::DIRECTION_STAND == $elevator->getCurrentState()) {
+                        return $elevator;
+                    }
                 }else {
-                    $elevatorDistance[$index] = $elevator->getCurrentFloor() - $floorNum;
+                    if(Elevator::DIRECTION_STAND == $elevator->getCurrentState()) {
+                        $distance = $elevator->getCurrentFloor() - $floorNum;
+                        if ($distance < 0) {
+                            $distance *= -1;
+                        }
+                        $elevatorDistance[$index] = $distance;
+                    }
                 }
             }
-
+            $item = array_keys($elevatorDistance, min($elevatorDistance));
+            return $this->elevatorList[$item[0]];
         }
 
         public function elevatorRun(){
@@ -100,6 +109,8 @@
                                     $row[] = "*";
                                 break;
                         }
+                    }elseif($elevator->getDestinationFloor() == $floor){
+                        $row[] = "x";
                     }else{
                         $row[] = " ";
                     }

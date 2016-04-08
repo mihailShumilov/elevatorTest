@@ -23,7 +23,7 @@
 
         private $currentFloor = 1;
 
-        private $destinationFloor = 1;
+        private $destinationFloor = false;
 
         private $currentState = self::DIRECTION_STAND;
 
@@ -102,5 +102,9 @@
 
         public function getCurrentState(){
             return $this->currentState;
+        }
+
+        public function getDestinationFloor(){
+            return $this->destinationFloor;
         }
     }
