@@ -49,7 +49,12 @@
          * @param $to
          */
         public function elevatorRequest($from, $to){
+            \Logger::getInstance()->write("Income request from {$from} to {$to} floor");
             $elevator = $this->getNearElevator($from);
+            \Logger::getInstance()->write("Near elevator: {$elevator->getID()} that located at {$elevator->getCurrentFloor()} floor");
+            if($elevator->getCurrentFloor() != $from){
+                $elevator->moveTo($from);
+            }
             $elevator->moveTo($to);
         }
 
@@ -91,7 +96,11 @@
             $table = new ConsoleTable();
             $table->addHeader("Floor");
             foreach($this->elevatorList as $index =>$elevator){
-                $table->addHeader("E{$index}");
+                if($elevator->getCurrentState() != Elevator::DIRECTION_STAND) {
+                    $table->addHeader("-E{$elevator->getID()}-");
+                }else{
+                    $table->addHeader(" E{$elevator->getID()} ");
+                }
             }
             for($floor = $this->maxFloorCount; $floor >= 1; $floor--){
                 $row = [];
@@ -106,7 +115,15 @@
                                     $row[] = ">";
                                 break;
                             default:
-                                    $row[] = "*";
+                                switch($elevator->getLastEvent()){
+                                    case Elevator::EVENT_DOOR_OPEN:
+                                        $row[] = "=";
+                                        break;
+                                    default:
+                                            $row[] = "*";
+                                        break;
+                                }
+
                                 break;
                         }
                     }elseif($elevator->getDestinationFloor() == $floor){
@@ -118,5 +135,6 @@
                 $table->addRow($row);
             }
             $table->display();
+            echo "Server running at http://127.0.0.1:1337\n";
         }
     }

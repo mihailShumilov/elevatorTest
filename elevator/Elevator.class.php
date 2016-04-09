@@ -27,7 +27,7 @@
 
         private $currentState = self::DIRECTION_STAND;
 
-        private $lastEvent = false;
+        private $lastEvent = self::EVENT_DOOR_CLOSE;
 
         private $floorList = [];
 
@@ -43,6 +43,7 @@
 
         public function moveTo($floorNum)
         {
+            \Logger::getInstance()->write("Elevator {$this->id} got request go to {$floorNum}");
             if ($floorNum) {
                 if(in_array($floorNum, $this->floorList)) {
                     $this->destinationFloor = $floorNum;
@@ -71,6 +72,7 @@
                     } else {
                         if (self::EVENT_DOOR_OPEN == $this->lastEvent) {
                             $this->raiseEvent(self::EVENT_DOOR_CLOSE);
+                            $this->destinationFloor = false;
                         }
                     }
                 }
@@ -79,21 +81,24 @@
 
         protected function raiseEvent($eventName)
         {
+            $logStr = "";
             $this->lastEvent = $eventName;
             switch ($eventName) {
                 case self::EVENT_ALARM:
-                    echo "Elevator {$this->id} send alarm event".PHP_EOL;
+                    $logStr = "Elevator {$this->id} send alarm event";
                     break;
                 case self::EVENT_DOOR_OPEN:
-                    echo "Elevator {$this->id} send door open event".PHP_EOL;
+                    $logStr = "Elevator {$this->id} send door open event";
                     break;
                 case self::EVENT_DOOR_CLOSE:
-                    echo "Elevator {$this->id} send door close event".PHP_EOL;
+                    $logStr = "Elevator {$this->id} send door close event";
                     break;
                 default:
-                    echo "Elevator {$this->id} send unknown event".PHP_EOL;
+                    $logStr = "Elevator {$this->id} send unknown event";
                     break;
             }
+
+            \Logger::getInstance()->write($logStr);
         }
 
         public function getCurrentFloor(){
@@ -106,5 +111,13 @@
 
         public function getDestinationFloor(){
             return $this->destinationFloor;
+        }
+
+        public function getLastEvent(){
+            return $this->lastEvent;
+        }
+
+        public function getID(){
+            return $this->id;
         }
     }
