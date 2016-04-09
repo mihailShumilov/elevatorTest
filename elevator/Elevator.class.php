@@ -33,6 +33,8 @@
 
         private $id = 0;
 
+        private $destinationPool = [];
+
 
         public function __construct(array $floorList, $currentFloor = 1, $id = 0)
         {
@@ -46,7 +48,7 @@
             \Logger::getInstance()->write("Elevator {$this->id} got request go to {$floorNum}");
             if ($floorNum) {
                 if(in_array($floorNum, $this->floorList)) {
-                    $this->destinationFloor = $floorNum;
+                    $this->destinationPool[] = $floorNum;
                 }else{
                     $this->raiseEvent('bad floor num');
                 }
@@ -56,6 +58,9 @@
         }
 
         public function move(){
+            if(!empty($this->destinationPool)&&(!$this->destinationFloor)){
+                $this->destinationFloor = array_shift($this->destinationPool);
+            }
             if($this->destinationFloor) {
                 if ($this->destinationFloor != $this->currentFloor) {
                     if ($this->destinationFloor < $this->currentFloor) {

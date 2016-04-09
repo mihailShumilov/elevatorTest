@@ -135,6 +135,7 @@
                 $table->addRow($row);
             }
             $table->display();
-            echo "Server running at http://127.0.0.1:1337\n";
+            echo date("Y-m-d H:i:s").PHP_EOL;
+            echo "Server running at http://127.0.0.1:1337".PHP_EOL;
         }
     }
