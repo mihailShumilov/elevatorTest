@@ -78,7 +78,10 @@
                         if (self::EVENT_DOOR_OPEN == $this->lastEvent) {
                             $this->raiseEvent(self::EVENT_DOOR_CLOSE);
                             $this->destinationFloor = false;
+                        } else {
+                            $this->raiseEvent(self::EVENT_DOOR_OPEN);
                         }
+
                     }
                 }
             }
@@ -86,7 +89,6 @@
 
         protected function raiseEvent($eventName)
         {
-            $logStr = "";
             $this->lastEvent = $eventName;
             switch ($eventName) {
                 case self::EVENT_ALARM:
@@ -124,5 +126,13 @@
 
         public function getID(){
             return $this->id;
+        }
+
+        public function isDestination($floor)
+        {
+            if ($floor) {
+                return in_array($floor, $this->destinationPool);
+            }
+            return false;
         }
     }

@@ -126,8 +126,10 @@
 
                                 break;
                         }
-                    }elseif($elevator->getDestinationFloor() == $floor){
+                    } else if ($elevator->isDestination($floor)) {
                         $row[] = "x";
+                    } else if ($elevator->getDestinationFloor() == $floor) {
+                        $row[] = "x1";
                     }else{
                         $row[] = " ";
                     }
@@ -136,6 +138,9 @@
             }
             $table->display();
             echo date("Y-m-d H:i:s").PHP_EOL;
+            foreach ($this->elevatorList as $elevator) {
+                echo "Elevator {$elevator->getID()} state: {$elevator->getCurrentState()} at {$elevator->getCurrentFloor()} floor" . PHP_EOL;
+            }
             echo "Server running at http://127.0.0.1:1337".PHP_EOL;
         }
     }
