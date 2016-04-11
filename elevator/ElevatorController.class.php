@@ -1,16 +1,14 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: godson
-     * Date: 4/8/16
-     * Time: 15:37
-     */
-
     namespace elevator;
 
 
     use LucidFrame\Console\ConsoleTable;
 
+    /**
+     * Class ElevatorController
+     *
+     * @package elevator
+     */
     class ElevatorController
     {
         /**
@@ -28,6 +26,12 @@
          */
         private $maxElevatorCount = 4;
 
+        /**
+         * ElevatorController constructor.
+         *
+         * @param int $maxFloorCount
+         * @param int $maxElevatorCount
+         */
         public function __construct($maxFloorCount = 10, $maxElevatorCount = 4)
         {
             $this->maxFloorCount    = $maxFloorCount;
@@ -35,6 +39,9 @@
             $this->initElevators();
         }
 
+        /**
+         * Init elevators
+         */
         private function initElevators()
         {
             $floorList = range(1, $this->maxFloorCount);
@@ -45,8 +52,12 @@
         }
 
         /**
+         * Process elevator request
+         *
          * @param $from
          * @param $to
+         *
+         * @return bool|Elevator
          */
         public function elevatorRequest($from, $to){
             \Logger::getInstance()->write("Income request from {$from} to {$to} floor");
@@ -65,8 +76,11 @@
 
 
         /**
+         * Return near elevator or false if all elevators is busy
+         *
          * @param $floorNum
-         * @return Elevator
+         *
+         * @return bool|Elevator
          */
         private function getNearElevator($floorNum){
             $elevatorDistance = [];
@@ -94,6 +108,9 @@
             }
         }
 
+        /**
+         * Run elevator moving
+         */
         public function elevatorRun(){
             foreach($this->elevatorList as $elevator){
                 $elevator->move();
@@ -101,6 +118,9 @@
             $this->drawCurrentState();
         }
 
+        /**
+         * Display current system state
+         */
         private function drawCurrentState(){
             system('clear');
             $table = new ConsoleTable();
@@ -154,6 +174,9 @@
             $this->drawAgenda();
         }
 
+        /**
+         * Display agenda
+         */
         private function drawAgenda()
         {
             echo "----------------------------------------" . PHP_EOL;

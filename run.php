@@ -1,12 +1,4 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: godson
-     * Date: 4/8/16
-     * Time: 16:45
-     */
-
-
     require_once("vendor/autoload.php");
     require_once("Logger.php");
     require_once("elevator/ElevatorController.class.php");
@@ -30,7 +22,7 @@
                 $response->write("Request from {$from} to {$to}\n");
                 $response->end("Your elevator: E{$elevator->getID()}\n");
             } else {
-                $response->end("All elevator is busy right now.\nPlease try again later\n");
+                $response->end("All elevators is busy right now.\nPlease try again later\n");
             }
         } else {
             $response->writeHead(400, array('Content-Type' => 'text/plain'));

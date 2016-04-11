@@ -1,14 +1,11 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: godson
-     * Date: 4/8/16
-     * Time: 15:16
-     */
-
     namespace elevator;
 
-
+    /**
+     * Class Elevator
+     *
+     * @package elevator
+     */
     class Elevator
     {
         const DIRECTION_UP          = 'up';
@@ -40,7 +37,13 @@
 
         private $mainState;
 
-
+        /**
+         * Elevator constructor.
+         *
+         * @param array $floorList
+         * @param int $currentFloor
+         * @param int $id
+         */
         public function __construct(array $floorList, $currentFloor = 1, $id = 0)
         {
             $this->floorList    = $floorList;
@@ -49,6 +52,11 @@
             $this->mainState    = self::MAIN_STATE_IDLE;
         }
 
+        /**
+         * Request to elevator moving
+         *
+         * @param $floorNum
+         */
         public function moveTo($floorNum)
         {
             \Logger::getInstance()->write("Elevator {$this->id} got request go to {$floorNum}");
@@ -63,6 +71,9 @@
             }
         }
 
+        /**
+         * Main moving function
+         */
         public function move(){
             if(!empty($this->destinationPool)&&(!$this->destinationFloor)){
                 $this->destinationFloor = array_shift($this->destinationPool);
@@ -97,6 +108,11 @@
             }
         }
 
+        /**
+         * Raise elevator event
+         *
+         * @param $eventName
+         */
         protected function raiseEvent($eventName)
         {
             $this->lastEvent = $eventName;
@@ -118,26 +134,46 @@
             \Logger::getInstance()->write($logStr);
         }
 
+        /**
+         * @return int
+         */
         public function getCurrentFloor(){
             return $this->currentFloor;
         }
 
+        /**
+         * @return string
+         */
         public function getCurrentState(){
             return $this->currentState;
         }
 
+        /**
+         * @return bool|int
+         */
         public function getDestinationFloor(){
             return $this->destinationFloor;
         }
 
+        /**
+         * @return string
+         */
         public function getLastEvent(){
             return $this->lastEvent;
         }
 
+        /**
+         * @return int
+         */
         public function getID(){
             return $this->id;
         }
 
+        /**
+         * @param $floor
+         *
+         * @return bool
+         */
         public function isDestination($floor)
         {
             if ($floor) {
@@ -146,6 +182,9 @@
             return false;
         }
 
+        /**
+         * @return string
+         */
         public function getMainState()
         {
             return $this->mainState;
