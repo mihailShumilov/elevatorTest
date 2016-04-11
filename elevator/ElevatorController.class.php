@@ -50,12 +50,15 @@
          */
         public function elevatorRequest($from, $to){
             \Logger::getInstance()->write("Income request from {$from} to {$to} floor");
-            $elevator = $this->getNearElevator($from);
-            \Logger::getInstance()->write("Near elevator: {$elevator->getID()} that located at {$elevator->getCurrentFloor()} floor");
-            if($elevator->getCurrentFloor() != $from){
-                $elevator->moveTo($from);
+            if ($elevator = $this->getNearElevator($from)) {
+                \Logger::getInstance()->write("Near elevator: {$elevator->getID()} that located at {$elevator->getCurrentFloor()} floor");
+                if ($elevator->getCurrentFloor() != $from) {
+                    $elevator->moveTo($from);
+                }
+                $elevator->moveTo($to);
+            } else {
+                \Logger::getInstance()->write("All Elevators is busy right now");
             }
-            $elevator->moveTo($to);
         }
 
 
@@ -67,11 +70,11 @@
             $elevatorDistance = [];
             foreach($this->elevatorList as $index=>$elevator){
                 if($elevator->getCurrentFloor() == $floorNum){
-                    if(Elevator::DIRECTION_STAND == $elevator->getCurrentState()) {
+                    if (Elevator::MAIN_STATE_IDLE == $elevator->getMainState()) {
                         return $elevator;
                     }
                 }else {
-                    if(Elevator::DIRECTION_STAND == $elevator->getCurrentState()) {
+                    if (Elevator::MAIN_STATE_IDLE == $elevator->getMainState()) {
                         $distance = $elevator->getCurrentFloor() - $floorNum;
                         if ($distance < 0) {
                             $distance *= -1;
@@ -80,8 +83,13 @@
                     }
                 }
             }
-            $item = array_keys($elevatorDistance, min($elevatorDistance));
-            return $this->elevatorList[$item[0]];
+
+            if ( ! empty($elevatorDistance)) {
+                $item = array_keys($elevatorDistance, min($elevatorDistance));
+                return isset($this->elevatorList[$item[0]]) ? $this->elevatorList[$item[0]] : false;
+            } else {
+                return false;
+            }
         }
 
         public function elevatorRun(){
@@ -139,7 +147,7 @@
             $table->display();
             echo date("Y-m-d H:i:s").PHP_EOL;
             foreach ($this->elevatorList as $elevator) {
-                echo "Elevator {$elevator->getID()} state: {$elevator->getCurrentState()} at {$elevator->getCurrentFloor()} floor" . PHP_EOL;
+                echo "Elevator {$elevator->getID()} state: {$elevator->getCurrentState()} at {$elevator->getCurrentFloor()} floor with main state {$elevator->getMainState()}" . PHP_EOL;
             }
             echo "Server running at http://127.0.0.1:1337".PHP_EOL;
         }
