@@ -18,12 +18,24 @@
 
     $app = function ($request, $response) use (&$elevatorController) {
         Logger::getInstance()->write("=========================================");
-        
-        $response->writeHead(200, array('Content-Type' => 'text/plain'));
-        $from = intval(rand(1, 10));
-        $to   = intval(rand(1, 10));
-        $elevatorController->elevatorRequest($from, $to);
-        $response->end("Request from {$from} to {$to}\n");
+
+        $inParams = $request->getQuery();
+
+        if ( ! empty($inParams['from']) && ! empty($inParams['to'])) {
+
+            $response->writeHead(200, array('Content-Type' => 'text/plain'));
+            $from = $inParams['from'];
+            $to   = $inParams['to'];
+            if ($elevator = $elevatorController->elevatorRequest($from, $to)) {
+                $response->write("Request from {$from} to {$to}\n");
+                $response->end("Your elevator: E{$elevator->getID()}\n");
+            } else {
+                $response->end("All elevator is busy right now.\nPlease try again later\n");
+            }
+        } else {
+            $response->writeHead(400, array('Content-Type' => 'text/plain'));
+            $response->end();
+        }
     };
 
     $loop = React\EventLoop\Factory::create();

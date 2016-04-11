@@ -56,8 +56,10 @@
                     $elevator->moveTo($from);
                 }
                 $elevator->moveTo($to);
+                return $elevator;
             } else {
                 \Logger::getInstance()->write("All Elevators is busy right now");
+                return false;
             }
         }
 
@@ -149,6 +151,19 @@
             foreach ($this->elevatorList as $elevator) {
                 echo "Elevator {$elevator->getID()} state: {$elevator->getCurrentState()} at {$elevator->getCurrentFloor()} floor with main state {$elevator->getMainState()}" . PHP_EOL;
             }
-            echo "Server running at http://127.0.0.1:1337".PHP_EOL;
+            $this->drawAgenda();
+        }
+
+        private function drawAgenda()
+        {
+            echo "----------------------------------------" . PHP_EOL;
+            echo "Agenda" . PHP_EOL;
+            echo "\t*\t-\televator in idle state" . PHP_EOL;
+            echo "\t>\t-\televator move down" . PHP_EOL;
+            echo "\t<\t-\televator move up" . PHP_EOL;
+            echo "\t=\t-\televator open door" . PHP_EOL;
+            echo "\tx\t-\tone of stop elevator point" . PHP_EOL;
+            echo "\tx1\t-\tcurrent elevator destination" . PHP_EOL;
+            echo "Server running at http://127.0.0.1:1337" . PHP_EOL;
         }
     }
